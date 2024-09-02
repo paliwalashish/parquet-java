@@ -18,27 +18,28 @@
  */
 package org.apache.parquet.bytes;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestCapacityByteArrayOutputStream {
 
   private TrackingByteBufferAllocator allocator;
 
-  @Before
+  @BeforeEach
   public void initAllocator() {
     allocator = TrackingByteBufferAllocator.wrap(new HeapByteBufferAllocator());
   }
 
-  @After
+  @AfterEach
   public void closeAllocator() {
     allocator.close();
   }
@@ -128,7 +129,7 @@ public class TestCapacityByteArrayOutputStream {
           BytesInput.from(capacityByteArrayOutputStream).toByteArray();
       assertEquals(54, byteArray.length);
       for (int i = 0; i < 54; i++) {
-        assertEquals(i + " in " + Arrays.toString(byteArray), 54 + i, byteArray[i]);
+        assertEquals(54 + i, byteArray[i], i + " in " + Arrays.toString(byteArray));
       }
     }
   }
@@ -197,15 +198,15 @@ public class TestCapacityByteArrayOutputStream {
       }
       // verifying we have not created 500 * 23 / 10 slabs
       assertTrue(
-          "slab count: " + capacityByteArrayOutputStream.getSlabCount(),
-          capacityByteArrayOutputStream.getSlabCount() <= 20);
+          capacityByteArrayOutputStream.getSlabCount() <= 20,
+          "slab count: " + capacityByteArrayOutputStream.getSlabCount());
       capacityByteArrayOutputStream.reset();
       writeArraysOf3(capacityByteArrayOutputStream, v);
       validate(capacityByteArrayOutputStream, v * 3);
       // verifying we use less slabs now
       assertTrue(
-          "slab count: " + capacityByteArrayOutputStream.getSlabCount(),
-          capacityByteArrayOutputStream.getSlabCount() <= 2);
+          capacityByteArrayOutputStream.getSlabCount() <= 2,
+          "slab count: " + capacityByteArrayOutputStream.getSlabCount());
     }
   }
 

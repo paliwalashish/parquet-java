@@ -23,10 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.parquet.column.values.bitpacking.BitPacking.BitPackingReader;
 import org.apache.parquet.column.values.bitpacking.BitPacking.BitPackingWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,7 @@ public class TestByteBitPacking {
       int[] values = generateValues(i);
       packUnpack(Packer.BIG_ENDIAN.newBytePacker(i), values, unpacked);
       LOG.debug("Output: {}", TestBitPacking.toString(unpacked));
-      Assert.assertArrayEquals("width " + i, values, unpacked);
+      assertArrayEquals(values, unpacked, "width " + i);
     }
   }
 
@@ -58,10 +61,10 @@ public class TestByteBitPacking {
       long[] values = generateValuesLong(i);
       packUnpack32(Packer.BIG_ENDIAN.newBytePackerForLong(i), values, unpacked32);
       LOG.debug("Output 32: {}", TestBitPacking.toString(unpacked32));
-      Assert.assertArrayEquals("width " + i, values, unpacked32);
+      assertArrayEquals(values, unpacked32, "width " + i);
       packUnpack8(Packer.BIG_ENDIAN.newBytePackerForLong(i), values, unpacked8);
       LOG.debug("Output 8: {}", TestBitPacking.toString(unpacked8));
-      Assert.assertArrayEquals("width " + i, values, unpacked8);
+      assertArrayEquals(values, unpacked8, "width " + i);
     }
   }
 
@@ -141,7 +144,7 @@ public class TestByteBitPacking {
       }
 
       LOG.debug("Output: {}", TestBitPacking.toString(unpacked));
-      Assert.assertArrayEquals("width " + i, values, unpacked);
+      assertArrayEquals(values, unpacked, "width " + i);
     }
   }
 
@@ -185,15 +188,15 @@ public class TestByteBitPacking {
         byte[] packedGenerated = new byte[i * 4];
         bytePacker.pack32Values(values, 0, packedGenerated, 0);
         LOG.debug("Gener. out: {}", TestBitPacking.toString(packedGenerated));
-        Assert.assertEquals(
-            pack.name() + " width " + i,
+        assertEquals(
             TestBitPacking.toString(packedByLemireAsBytes),
-            TestBitPacking.toString(packedGenerated));
+            TestBitPacking.toString(packedGenerated),
+            pack.name() + " width " + i);
 
         bytePacker.unpack32Values(ByteBuffer.wrap(packedByLemireAsBytes), 0, unpacked, 0);
         LOG.debug("Output: {}", TestBitPacking.toString(unpacked));
 
-        Assert.assertArrayEquals("width " + i, values, unpacked);
+        assertArrayEquals(values, unpacked, "width " + i);
       }
     }
   }

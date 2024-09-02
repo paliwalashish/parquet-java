@@ -18,10 +18,10 @@
  */
 package org.apache.parquet.column.values.bitpacking;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.parquet.bytes.BytesUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestByteBasedBitPackingEncoder {
 
